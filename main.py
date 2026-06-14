@@ -375,7 +375,7 @@ class IndexedAllocation:
 
 
 
-# DEMO
+# DEMO- output 
 
 
 if __name__ == "__main__":
@@ -394,13 +394,27 @@ if __name__ == "__main__":
     for r in result:
         print(r)
 
+    avg_wt = sum(r[1] for r in result) / len(result)
+    avg_tat = sum(r[2] for r in result) / len(result)
+
+    print("Average Waiting Time:", round(avg_wt, 2))
+    print("Average Turnaround Time:", round(avg_tat, 2))
+
     print("Gantt:", gantt)
 
     result, gantt = round_robin(processes, quantum=2)
 
+
+
     print("\nRound Robin Results")
     for r in result:
         print(r)
+
+    avg_wt = sum(r[1] for r in result) / len(result)
+    avg_tat = sum(r[2] for r in result) / len(result)
+
+    print("Average Waiting Time:", round(avg_wt, 2))
+    print("Average Turnaround Time:", round(avg_tat, 2))
 
     print("Gantt:", gantt)
 
