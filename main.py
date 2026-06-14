@@ -213,6 +213,59 @@ class DiningPhilosophers:
             t.join()
 
 
+# MODULE 5: DEADLOCK
+
+
+def bankers_algorithm(allocation,
+                      maximum,
+                      available):
+
+    n = len(allocation)
+    m = len(available)
+
+    need = [
+        [
+            maximum[i][j] - allocation[i][j]
+            for j in range(m)
+        ]
+        for i in range(n)
+    ]
+
+    finish = [False] * n
+    safe_sequence = []
+
+    work = available[:]
+
+    while len(safe_sequence) < n:
+
+        found = False
+
+        for i in range(n):
+
+            if not finish[i]:
+
+                possible = True
+
+                for j in range(m):
+                    if need[i][j] > work[j]:
+                        possible = False
+                        break
+
+                if possible:
+
+                    for j in range(m):
+                        work[j] += allocation[i][j]
+
+                    safe_sequence.append(i)
+                    finish[i] = True
+                    found = True
+
+        if not found:
+            return False, []
+
+    return True, safe_sequence
+
+
 # DEMO
 
 
@@ -261,4 +314,38 @@ if __name__ == "__main__":
 
 dp = DiningPhilosophers()
 dp.run()
+
+print("\n===== Banker's Algorithm =====")
+
+allocation = [
+    [0,1,0],
+    [2,0,0],
+    [3,0,2],
+    [2,1,1],
+    [0,0,2]
+]
+
+maximum = [
+    [7,5,3],
+    [3,2,2],
+    [9,0,2],
+    [2,2,2],
+    [4,3,3]
+]
+
+available = [3,3,2]
+
+safe, seq = bankers_algorithm(
+    allocation,
+    maximum,
+    available
+)
+
+print("Safe State:", safe)
+
+if safe:
+    print("Safe Sequence:",
+          " -> ".join(
+              f"P{i}" for i in seq
+          ))
 
