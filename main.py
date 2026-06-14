@@ -10,9 +10,9 @@ Implements:
 from collections import deque
 
 
-# =========================
+
 # MODULE 1: CPU SCHEDULING
-# =========================
+
 
 class Process:
     def __init__(self, pid, arrival, burst):
@@ -94,9 +94,9 @@ def round_robin(processes, quantum):
     return results, gantt
 
 
-# =========================
+
 # MODULE 2: MEMORY
-# =========================
+
 
 def first_fit(blocks, processes):
     blocks = blocks[:]
@@ -131,9 +131,7 @@ def best_fit(blocks, processes):
     return allocation
 
 
-# =========================
 # MODULE 3: PAGE REPLACEMENT
-# =========================
 
 def fifo_page_replacement(reference, frames):
     memory = []
@@ -172,9 +170,9 @@ def lru_page_replacement(reference, frames):
     return faults
 
 
-# =========================
+
 # DEMO
-# =========================
+
 
 if __name__ == "__main__":
 
