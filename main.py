@@ -171,6 +171,48 @@ def lru_page_replacement(reference, frames):
 
 
 
+# MODULE 4: SYNCHRONIZATION
+
+
+import threading
+import time
+
+class DiningPhilosophers:
+
+    def __init__(self, n=5):
+        self.n = n
+        self.forks = [threading.Lock() for _ in range(n)]
+
+    def philosopher(self, i):
+
+        left = self.forks[i]
+        right = self.forks[(i + 1) % self.n]
+
+        print(f"Philosopher {i} is Thinking")
+
+        with left:
+            with right:
+                print(f"Philosopher {i} is Eating")
+                time.sleep(1)
+
+        print(f"Philosopher {i} Finished Eating")
+
+    def run(self):
+
+        threads = []
+
+        for i in range(self.n):
+            t = threading.Thread(
+                target=self.philosopher,
+                args=(i,)
+            )
+            threads.append(t)
+            t.start()
+
+        for t in threads:
+            t.join()
+
+
 # DEMO
 
 
@@ -214,3 +256,9 @@ if __name__ == "__main__":
 
     print("FIFO Faults:", fifo_page_replacement(reference, 3))
     print("LRU Faults :", lru_page_replacement(reference, 3))
+
+    print("\n===== Synchronization =====")
+
+dp = DiningPhilosophers()
+dp.run()
+
