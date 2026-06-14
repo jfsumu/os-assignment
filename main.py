@@ -5,6 +5,10 @@ Implements:
 1. CPU Scheduling (FCFS, Round Robin)
 2. Memory Management (First Fit, Best Fit)
 3. Page Replacement (FIFO, LRU)
+4. Synchronization (Dining Philosophers)
+5. Deadlock (Banker's Algorithm)
+6. File Management (Sequential, Indexed)
+
 """
 
 from collections import deque
@@ -173,7 +177,6 @@ def lru_page_replacement(reference, frames):
 
 # MODULE 4: SYNCHRONIZATION
 
-
 import threading
 import time
 
@@ -189,9 +192,19 @@ class DiningPhilosophers:
         right = self.forks[(i + 1) % self.n]
 
         print(f"Philosopher {i} is Thinking")
+        time.sleep(0.5)
 
-        with left:
-            with right:
+        # Deadlock Prevention
+        if i % 2 == 0:
+            first, second = left, right
+        else:
+            first, second = right, left
+
+        print(f"Philosopher {i} is Hungry")
+
+        with first:
+            with second:
+
                 print(f"Philosopher {i} is Eating")
                 time.sleep(1)
 
@@ -199,18 +212,24 @@ class DiningPhilosophers:
 
     def run(self):
 
+        print("\nStarting Dining Philosophers Simulation...\n")
+
         threads = []
 
         for i in range(self.n):
+
             t = threading.Thread(
                 target=self.philosopher,
                 args=(i,)
             )
+
             threads.append(t)
             t.start()
 
         for t in threads:
             t.join()
+
+        print("\nAll Philosophers Finished.\n")
 
 
 
@@ -314,6 +333,47 @@ class SequentialAllocation:
         for i, block in enumerate(self.disk):
             print(f"{i}: {block}")
 
+class IndexedAllocation:
+
+    def __init__(self, total_blocks):
+
+        self.disk = ["FREE"] * total_blocks
+        self.index_table = {}
+
+    def allocate(self, filename, blocks_needed):
+
+        free_blocks = []
+
+        for i in range(len(self.disk)):
+            if self.disk[i] == "FREE":
+                free_blocks.append(i)
+
+        if len(free_blocks) < blocks_needed:
+            return False
+
+        allocated = free_blocks[:blocks_needed]
+
+        for block in allocated:
+            self.disk[block] = filename
+
+        self.index_table[filename] = allocated
+
+        return True
+
+    def display(self):
+
+        print("\nIndexed Allocation Table")
+
+        for file, blocks in self.index_table.items():
+            print(file, "->", blocks)
+
+        print("\nDisk Blocks")
+
+        for i, block in enumerate(self.disk):
+            print(f"{i}: {block}")
+
+
+
 
 # DEMO
 
@@ -400,9 +460,20 @@ if __name__ == "__main__":
 
     print("\n===== File Management =====")
 
+    print("\n--- Sequential Allocation ---")
+
     disk = SequentialAllocation(20)
 
     disk.allocate("File1", 5)
     disk.allocate("File2", 4)
 
     disk.display()
+
+    print("\n--- Indexed Allocation ---")
+
+    indexed = IndexedAllocation(20)
+
+    indexed.allocate("FileA", 5)
+    indexed.allocate("FileB", 4)
+
+    indexed.display()
