@@ -213,6 +213,7 @@ class DiningPhilosophers:
             t.join()
 
 
+
 # MODULE 5: DEADLOCK
 
 
@@ -266,6 +267,54 @@ def bankers_algorithm(allocation,
     return True, safe_sequence
 
 
+
+# MODULE 6: FILE MANAGEMENT
+
+
+class SequentialAllocation:
+
+    def __init__(self, total_blocks):
+
+        self.disk = ["FREE"] * total_blocks
+
+    def allocate(self,
+                 filename,
+                 size):
+
+        count = 0
+        start = -1
+
+        for i in range(len(self.disk)):
+
+            if self.disk[i] == "FREE":
+
+                if count == 0:
+                    start = i
+
+                count += 1
+
+                if count == size:
+
+                    for j in range(start,
+                                   start + size):
+
+                        self.disk[j] = filename
+
+                    return True
+
+            else:
+                count = 0
+
+        return False
+
+    def display(self):
+
+        print("\nDisk Blocks")
+
+        for i, block in enumerate(self.disk):
+            print(f"{i}: {block}")
+
+
 # DEMO
 
 
@@ -312,40 +361,48 @@ if __name__ == "__main__":
 
     print("\n===== Synchronization =====")
 
-dp = DiningPhilosophers()
-dp.run()
+    dp = DiningPhilosophers()
+    dp.run()
 
-print("\n===== Banker's Algorithm =====")
+    print("\n===== Banker's Algorithm =====")
 
-allocation = [
-    [0,1,0],
-    [2,0,0],
-    [3,0,2],
-    [2,1,1],
-    [0,0,2]
-]
+    allocation = [
+        [0,1,0],
+        [2,0,0],
+        [3,0,2],
+        [2,1,1],
+        [0,0,2]
+    ]
 
-maximum = [
-    [7,5,3],
-    [3,2,2],
-    [9,0,2],
-    [2,2,2],
-    [4,3,3]
-]
+    maximum = [
+     [7,5,3],
+        [3,2,2],
+        [9,0,2],
+        [2,2,2],
+        [4,3,3]
+    ]
 
-available = [3,3,2]
+    available = [3,3,2]
 
-safe, seq = bankers_algorithm(
-    allocation,
-    maximum,
-    available
-)
+    safe, seq = bankers_algorithm(
+        allocation,
+        maximum,
+        available
+    )
 
-print("Safe State:", safe)
+    print("Safe State:", safe)
 
-if safe:
-    print("Safe Sequence:",
-          " -> ".join(
-              f"P{i}" for i in seq
-          ))
+    if safe:
+        print("Safe Sequence:",
+              " -> ".join(
+               f"P{i}" for i in seq
+            ))
 
+    print("\n===== File Management =====")
+
+    disk = SequentialAllocation(20)
+
+    disk.allocate("File1", 5)
+    disk.allocate("File2", 4)
+
+    disk.display()
